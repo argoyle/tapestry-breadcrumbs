@@ -1,0 +1,72 @@
+package se.unbound.tapestry.breadcrumbs;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+import org.apache.tapestry5.runtime.Component;
+import org.apache.tapestry5.services.Request;
+import org.apache.tapestry5.services.Response;
+import org.junit.Test;
+
+import se.unbound.tapestry.breadcrumbs.mocks.ApplicationStateManagerMock;
+import se.unbound.tapestry.breadcrumbs.mocks.ComponentClassResolverMock;
+import se.unbound.tapestry.breadcrumbs.mocks.ComponentSourceMock;
+import se.unbound.tapestry.breadcrumbs.mocks.GroupPageMock;
+import se.unbound.tapestry.breadcrumbs.mocks.PageRenderLinkSourceMock;
+import se.unbound.tapestry.breadcrumbs.mocks.RequestMock;
+import se.unbound.tapestry.breadcrumbs.mocks.ResponseMock;
+import se.unbound.tapestry.breadcrumbs.mocks.UserPageMock;
+
+public class BreadCrumbDispatcherTest {
+    private final ApplicationStateManagerMock applicationStateManager = new ApplicationStateManagerMock();
+    private final ComponentClassResolverMock componentClassResolver = new ComponentClassResolverMock();
+    private final ComponentSourceMock componentSource = new ComponentSourceMock();
+    private final PageRenderLinkSourceMock pageRenderLinkSource = new PageRenderLinkSourceMock();
+    private final BreadCrumbDispatcher dispatcher = new BreadCrumbDispatcher(this.applicationStateManager,
+            this.componentClassResolver, this.componentSource, this.pageRenderLinkSource, "en_GB,sv_SE");
+
+    @Test
+    public void dispatcherReturnFalseForRootPage() throws Exception {
+        this.addPage("/", null);
+        final Request request = new RequestMock("/");
+        final Response response = new ResponseMock();
+        final boolean handled = this.dispatcher.dispatch(request, response);
+        assertFalse("handled", handled);
+    }
+
+    @Test
+    public void dispatcherReturnFalseForPageWithoutAnnotation() throws Exception {
+        this.addPage("user", new UserPageMock());
+        final Request request = new RequestMock("/user/1");
+        final Response response = new ResponseMock();
+        final boolean handled = this.dispatcher.dispatch(request, response);
+        assertFalse("handled", handled);
+    }
+
+    @Test
+    public void dispatcherAddsPageWithAnnotationToBreadCrumbList() throws Exception {
+        final BreadCrumbList breadCrumbList = new BreadCrumbList();
+        this.applicationStateManager.set(BreadCrumbList.class, breadCrumbList);
+        this.addPage("group", new GroupPageMock());
+        final Request request = new RequestMock("/group/1");
+        final Response response = new ResponseMock();
+        this.dispatcher.dispatch(request, response);
+        assertEquals("list size", 1, breadCrumbList.size());
+    }
+
+    @Test
+    public void dispatcherAddsLocalizedPageWithAnnotationToBreadCrumbList() throws Exception {
+        final BreadCrumbList breadCrumbList = new BreadCrumbList();
+        this.applicationStateManager.set(BreadCrumbList.class, breadCrumbList);
+        this.addPage("group", new GroupPageMock());
+        final Request request = new RequestMock("/sv_SE/group/1");
+        final Response response = new ResponseMock();
+        this.dispatcher.dispatch(request, response);
+        assertEquals("list size", 1, breadCrumbList.size());
+    }
+
+    private void addPage(final String pageName, final Component page) {
+        this.componentClassResolver.addPage(pageName, page);
+        this.componentSource.addPage(pageName, page);
+    }
+}

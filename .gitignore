@@ -1,0 +1,10 @@
+/target
+/.settings
+/.classpath
+/.project
+/.checkstyle
+/.checkstyle-rules
+/.pmd
+/.ruleset
+/.fbprefs
+/.findbugs-excludes
