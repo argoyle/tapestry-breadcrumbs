@@ -1,21 +1,41 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
   <groupId>se.unbound</groupId>
   <artifactId>tapestry-breadcrumbs</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <name>Unbound Tapestry BreadCrumbs</name>
+  <description>A bread crumb trail implementation for Tapestry 5.</description>
+  <url>https://github.com/argoyle/tapestry-breadcrumbs</url>
 
-  <ciManagement>
-    <system>Jenkins</system>
-    <url>http://jenkins.unbound.se</url>
-  </ciManagement>
+  <licenses>
+    <license>
+      <name>Simplified BSD License</name>
+      <url>http://opensource.org/licenses/bsd-license.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <scm>
-    <connection>scm:git:ssh://git@git.unbound.se/tapestry-breadcrumbs</connection>
-    <developerConnection>scm:git:ssh://git@git.unbound.se/tapestry-breadcrumbs</developerConnection>
+    <url>git@github.com:argoyle/tapestry-breadcrumbs.git</url>
+    <connection>scm:git:git@github.com:argoyle/tapestry-breadcrumbs.git</connection>
+    <developerConnection>scm:git:git@github.com:argoyle/tapestry-breadcrumbs.git</developerConnection>
   </scm>
+
+  <developers>
+    <developer>
+      <id>joakim</id>
+      <name>Joakim Olsson</name>
+      <email>joakim@unbound.se</email>
+    </developer>
+  </developers>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
