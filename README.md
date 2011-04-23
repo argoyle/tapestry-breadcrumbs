@@ -14,13 +14,13 @@ Add the annotation to your page-class:
 public class Index {
 
 Contribute the dispatcher to the masterDispatcher in your apps module-class:
-public void contributeMasterDispatcher(final OrderedConfiguration<Dispatcher> configuration,
-    @InjectService("BreadCrumbDispatcher") final Dispatcher breadCrumbDispatcher) {
-        configuration.add("BreadCrumbDispatcher", breadCrumbDispatcher,
-                "before:PageRender);
-}
+	public void contributeMasterDispatcher(final OrderedConfiguration<Dispatcher> configuration,
+			@InjectService("BreadCrumbDispatcher") final Dispatcher breadCrumbDispatcher) {
+					configuration.add("BreadCrumbDispatcher", breadCrumbDispatcher,
+									"before:PageRender);
+	}
 
 Add the crumb trail to your template:
-<ul>
-  <li t:type="crumb/breadcrumbtrail" t:value="breadCrumb"><a t:type="crumb/displaybreadcrumb" t:breadcrumb="breadCrumb" /></li>
-</ul>
+	<ul>
+		<li t:type="crumb/breadcrumbtrail" t:value="breadCrumb"><a t:type="crumb/displaybreadcrumb" t:breadcrumb="breadCrumb" /></li>
+	</ul>
