@@ -15,8 +15,6 @@ import java.lang.annotation.Target;
 public @interface BreadCrumb {
     /**
      * The titleKey is the key into the message catalog that the title of the crumb should use.
-     * 
-     * @return the titleKey.
      */
     String titleKey();
 }
