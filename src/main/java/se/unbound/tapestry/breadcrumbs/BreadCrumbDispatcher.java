@@ -107,7 +107,7 @@ public class BreadCrumbDispatcher implements Dispatcher {
     }
 
     private Object[] getContext(final String path, final String pageName) {
-        Object[] context = null;
+        Object[] context = new Object[0];
 
         if (path.length() > pageName.length() + 2) {
             final String contextString = path.substring(pageName.length() + 2);
