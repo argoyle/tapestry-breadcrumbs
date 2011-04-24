@@ -17,10 +17,17 @@ Add a dependency to your POM:
       <version>1.1</version>
     </dependency>
 
-Add the annotation to your page-class:
+Add the annotation to your page-classes:
 
     @BreadCrumb(titleKey="index.title")
     public class Index {
+
+The titleKey is the key into the message catalog that the title of the crumb should use.
+
+Add the BreadCrumbModule as a sub-module:
+
+    @SubModule({ BreadCrumbModule.class })
+    public class AppModule {
 
 Contribute the dispatcher to the masterDispatcher in your apps module-class:
 
@@ -33,5 +40,8 @@ Contribute the dispatcher to the masterDispatcher in your apps module-class:
 Add the crumb trail to your template:
 
     <ul>
-      <li t:type="crumb/breadcrumbtrail" t:value="breadCrumb"><a t:type="crumb/displaybreadcrumb" t:breadcrumb="breadCrumb" /></li>
+      <li t:type="crumb/breadcrumbtrail" t:value="breadCrumb">
+        <a t:type="crumb/displaybreadcrumb" t:breadcrumb="breadCrumb" />
+      </li>
     </ul>
+
