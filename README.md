@@ -24,12 +24,13 @@ Add the annotation to your page-classes:
 
 The titleKey is the key into the message catalog that the title of the crumb should use.
 
-Contribute the dispatcher to the masterDispatcher in your apps module-class:
+Until version 1.3 you need to contribute the dispatcher to the masterDispatcher in your apps module-class, from version 1.3 this 
+is handled automatically by the library:
 
     public void contributeMasterDispatcher(final OrderedConfiguration<Dispatcher> configuration,
         @InjectService("BreadCrumbDispatcher") final Dispatcher breadCrumbDispatcher) {
             configuration.add("BreadCrumbDispatcher", breadCrumbDispatcher,
-                    "before:PageRender);
+                    "before:PageRender");
     }
 
 Add the crumb trail to your template:
