@@ -41,20 +41,21 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jdk.version>1.6</jdk.version>
+    <tapestry.version>5.2.5</tapestry.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.tapestry</groupId>
       <artifactId>tapestry-ioc</artifactId>
-      <version>5.2.4</version>
+      <version>${tapestry.version}</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.tapestry</groupId>
       <artifactId>tapestry-core</artifactId>
-      <version>5.2.4</version>
+      <version>${tapestry.version}</version>
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
@@ -82,7 +83,7 @@
     <dependency>
       <groupId>org.apache.tapestry</groupId>
       <artifactId>tapestry-test</artifactId>
-      <version>5.2.4</version>
+      <version>${tapestry.version}</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
