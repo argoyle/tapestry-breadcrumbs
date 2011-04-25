@@ -14,7 +14,7 @@ Add a dependency to your POM:
     <dependency>
       <groupId>se.unbound</groupId>
       <artifactId>tapestry-breadcrumbs</artifactId>
-      <version>1.1</version>
+      <version>1.2</version>
     </dependency>
 
 Add the annotation to your page-classes:
@@ -23,11 +23,6 @@ Add the annotation to your page-classes:
     public class Index {
 
 The titleKey is the key into the message catalog that the title of the crumb should use.
-
-Add the BreadCrumbModule as a sub-module:
-
-    @SubModule({ BreadCrumbModule.class })
-    public class AppModule {
 
 Contribute the dispatcher to the masterDispatcher in your apps module-class:
 
