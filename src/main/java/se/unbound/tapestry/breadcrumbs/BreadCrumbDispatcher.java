@@ -1,6 +1,7 @@
 package se.unbound.tapestry.breadcrumbs;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 
 import org.apache.tapestry5.Link;
 import org.apache.tapestry5.SymbolConstants;
@@ -67,13 +68,17 @@ public class BreadCrumbDispatcher implements Dispatcher {
             }
         }
 
-        /* Is the requested page tagged with BreadCrumb-annotation? */
+        /* Is the requested page tagged with BreadCrumb- or BreadCrumbReset-annotation? */
         final Component page = this.componentSource.getPage(pageName);
-        final BreadCrumb annotation = this.findAnnotation(page.getClass());
 
+        final BreadCrumbList breadCrumbList = this.applicationStateManager.get(BreadCrumbList.class);
+        final BreadCrumbReset reset = this.findAnnotation(page.getClass(), BreadCrumbReset.class);
+        if (reset != null) {
+            breadCrumbList.reset();
+        }
+
+        final BreadCrumb annotation = this.findAnnotation(page.getClass(), BreadCrumb.class);
         if (annotation != null) {
-            final BreadCrumbList breadCrumbList = this.applicationStateManager.get(BreadCrumbList.class);
-
             final String titleKey = annotation.titleKey();
 
             final Object[] context = this.getContext(path, pageName);
@@ -87,11 +92,11 @@ public class BreadCrumbDispatcher implements Dispatcher {
         return false;
     }
 
-    private BreadCrumb findAnnotation(final Class<?> clazz) {
-        BreadCrumb result = clazz.getAnnotation(BreadCrumb.class);
+    private <T extends Annotation> T findAnnotation(final Class<?> clazz, final Class<T> annotation) {
+        T result = clazz.getAnnotation(annotation);
 
         if (result == null && clazz.getSuperclass() != null) {
-            result = this.findAnnotation(clazz.getSuperclass());
+            result = this.findAnnotation(clazz.getSuperclass(), annotation);
         }
 
         return result;

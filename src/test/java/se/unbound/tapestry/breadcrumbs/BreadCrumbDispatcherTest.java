@@ -12,6 +12,8 @@ import se.unbound.tapestry.breadcrumbs.mocks.ApplicationStateManagerMock;
 import se.unbound.tapestry.breadcrumbs.mocks.ComponentClassResolverMock;
 import se.unbound.tapestry.breadcrumbs.mocks.ComponentSourceMock;
 import se.unbound.tapestry.breadcrumbs.mocks.GroupPageMock;
+import se.unbound.tapestry.breadcrumbs.mocks.IndexPageMock;
+import se.unbound.tapestry.breadcrumbs.mocks.LinkMock;
 import se.unbound.tapestry.breadcrumbs.mocks.PageRenderLinkSourceMock;
 import se.unbound.tapestry.breadcrumbs.mocks.RequestMock;
 import se.unbound.tapestry.breadcrumbs.mocks.ResponseMock;
@@ -60,6 +62,18 @@ public class BreadCrumbDispatcherTest {
         this.applicationStateManager.set(BreadCrumbList.class, breadCrumbList);
         this.addPage("group", new GroupPageMock());
         final Request request = new RequestMock("/sv_SE/group/1");
+        final Response response = new ResponseMock();
+        this.dispatcher.dispatch(request, response);
+        assertEquals("list size", 1, breadCrumbList.size());
+    }
+
+    @Test
+    public void dispatcherResetsBreadCrumbListIfResetAnnotationIsPresent() throws Exception {
+        final BreadCrumbList breadCrumbList = new BreadCrumbList();
+        breadCrumbList.add(new BreadCrumbInfo("edit.title", new LinkMock("/edit/2"), "Edit"));
+        this.applicationStateManager.set(BreadCrumbList.class, breadCrumbList);
+        this.addPage("index", new IndexPageMock());
+        final Request request = new RequestMock("/index/1");
         final Response response = new ResponseMock();
         this.dispatcher.dispatch(request, response);
         assertEquals("list size", 1, breadCrumbList.size());

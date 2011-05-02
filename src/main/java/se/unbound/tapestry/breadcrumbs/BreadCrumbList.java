@@ -40,4 +40,11 @@ public class BreadCrumbList implements Iterable<BreadCrumbInfo> {
     public int size() {
         return this.crumbs.size();
     }
+
+    /**
+     * Resets the list of crumbs.
+     */
+    public void reset() {
+        this.crumbs.clear();
+    }
 }
