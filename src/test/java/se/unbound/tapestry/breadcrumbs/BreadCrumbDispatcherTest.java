@@ -4,15 +4,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import org.apache.tapestry5.runtime.Component;
+import org.apache.tapestry5.services.ComponentEventLinkEncoder;
 import org.apache.tapestry5.services.Request;
 import org.apache.tapestry5.services.Response;
 import org.junit.Test;
 
 import se.unbound.tapestry.breadcrumbs.mocks.ApplicationStateManagerMock;
 import se.unbound.tapestry.breadcrumbs.mocks.ComponentClassResolverMock;
+import se.unbound.tapestry.breadcrumbs.mocks.ComponentEventLinkEncoderMock;
 import se.unbound.tapestry.breadcrumbs.mocks.ComponentSourceMock;
 import se.unbound.tapestry.breadcrumbs.mocks.GroupPageMock;
 import se.unbound.tapestry.breadcrumbs.mocks.IndexPageMock;
+import se.unbound.tapestry.breadcrumbs.mocks.IndexPageWithIgnoreMock;
 import se.unbound.tapestry.breadcrumbs.mocks.LinkMock;
 import se.unbound.tapestry.breadcrumbs.mocks.PageRenderLinkSourceMock;
 import se.unbound.tapestry.breadcrumbs.mocks.RequestMock;
@@ -24,8 +27,9 @@ public class BreadCrumbDispatcherTest {
     private final ComponentClassResolverMock componentClassResolver = new ComponentClassResolverMock();
     private final ComponentSourceMock componentSource = new ComponentSourceMock();
     private final PageRenderLinkSourceMock pageRenderLinkSource = new PageRenderLinkSourceMock();
+    private final ComponentEventLinkEncoder componentEventLinkEncoder = new ComponentEventLinkEncoderMock();
     private final BreadCrumbDispatcher dispatcher = new BreadCrumbDispatcher(this.applicationStateManager,
-            this.componentClassResolver, this.componentSource, this.pageRenderLinkSource, "en_GB,sv_SE");
+            this.componentSource, this.pageRenderLinkSource, this.componentEventLinkEncoder);
 
     @Test
     public void dispatcherReturnFalseForRootPage() throws Exception {
@@ -74,6 +78,34 @@ public class BreadCrumbDispatcherTest {
         this.applicationStateManager.set(BreadCrumbList.class, breadCrumbList);
         this.addPage("index", new IndexPageMock());
         final Request request = new RequestMock("/index/1");
+        final Response response = new ResponseMock();
+        this.dispatcher.dispatch(request, response);
+        assertEquals("list size", 1, breadCrumbList.size());
+    }
+
+    @Test
+    public void dispatcherDoesNotResetBreadCrumbListIfResetAnnotationHasSpecifiedPreviousPageClassAsIgnored()
+            throws Exception {
+        final BreadCrumbList breadCrumbList = new BreadCrumbList();
+        breadCrumbList.add(new BreadCrumbInfo("edit.title", new LinkMock("/edit/2"), "Edit"));
+        this.applicationStateManager.set(BreadCrumbList.class, breadCrumbList);
+        this.addPage("index", new IndexPageWithIgnoreMock());
+        this.addPage("group", new GroupPageMock());
+        final RequestMock request = new RequestMock("localhost", 80, "/app", "/index/1");
+        request.addHeader("Referer", "http://localhost/app/group/1");
+        final Response response = new ResponseMock();
+        this.dispatcher.dispatch(request, response);
+        assertEquals("list size", 2, breadCrumbList.size());
+    }
+
+    @Test
+    public void dispatcherResetsBreadCrumbListIfRefererIsNoValidURI() throws Exception {
+        final BreadCrumbList breadCrumbList = new BreadCrumbList();
+        breadCrumbList.add(new BreadCrumbInfo("edit.title", new LinkMock("/edit/2"), "Edit"));
+        this.applicationStateManager.set(BreadCrumbList.class, breadCrumbList);
+        this.addPage("index", new IndexPageMock());
+        final RequestMock request = new RequestMock("localhost", 80, "/app", "/index/1");
+        request.addHeader("Referer", "http://localhost/app/");
         final Response response = new ResponseMock();
         this.dispatcher.dispatch(request, response);
         assertEquals("list size", 1, breadCrumbList.size());

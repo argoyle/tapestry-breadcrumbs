@@ -12,12 +12,12 @@ public class PageRenderLinkSourceMock implements PageRenderLinkSource {
 
     @Override
     public Link createPageRenderLinkWithContext(final String pageName, final Object... context) {
-        return new LinkMock("/" + pageName);
+        throw new UnsupportedOperationException("Not yet implemented!");
     }
 
     @Override
     public Link createPageRenderLinkWithContext(final String pageName, final EventContext eventContext) {
-        throw new UnsupportedOperationException("Not yet implemented!");
+        return new LinkMock("/" + pageName);
     }
 
     @Override

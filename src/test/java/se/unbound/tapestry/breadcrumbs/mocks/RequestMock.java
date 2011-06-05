@@ -1,16 +1,34 @@
 package se.unbound.tapestry.breadcrumbs.mocks;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.tapestry5.services.Request;
 import org.apache.tapestry5.services.Session;
 
 public class RequestMock implements Request {
     private final String path;
+    private final String server;
+    private final int port;
+    private final String context;
+
+    private final Map<String, String> headers = new HashMap<String, String>();
 
     public RequestMock(final String path) {
+        this(null, 80, null, path);
+    }
+
+    public RequestMock(final String server, final int port, final String context, final String path) {
+        this.server = server;
+        this.port = port;
+        this.context = context;
         this.path = path;
+    }
+
+    public void addHeader(final String name, final String value) {
+        this.headers.put(name, value);
     }
 
     @Override
@@ -19,12 +37,22 @@ public class RequestMock implements Request {
     }
 
     @Override
-    public Session getSession(final boolean create) {
-        throw new UnsupportedOperationException("Not yet implemented!");
+    public String getContextPath() {
+        return this.context;
     }
 
     @Override
-    public String getContextPath() {
+    public String getServerName() {
+        return this.server;
+    }
+
+    @Override
+    public int getServerPort() {
+        return this.port;
+    }
+
+    @Override
+    public Session getSession(final boolean create) {
         throw new UnsupportedOperationException("Not yet implemented!");
     }
 
@@ -60,7 +88,7 @@ public class RequestMock implements Request {
 
     @Override
     public String getHeader(final String name) {
-        throw new UnsupportedOperationException("Not yet implemented!");
+        return this.headers.get(name);
     }
 
     @Override
@@ -70,11 +98,6 @@ public class RequestMock implements Request {
 
     @Override
     public boolean isSecure() {
-        throw new UnsupportedOperationException("Not yet implemented!");
-    }
-
-    @Override
-    public String getServerName() {
         throw new UnsupportedOperationException("Not yet implemented!");
     }
 
@@ -100,11 +123,6 @@ public class RequestMock implements Request {
 
     @Override
     public int getLocalPort() {
-        throw new UnsupportedOperationException("Not yet implemented!");
-    }
-
-    @Override
-    public int getServerPort() {
         throw new UnsupportedOperationException("Not yet implemented!");
     }
 }

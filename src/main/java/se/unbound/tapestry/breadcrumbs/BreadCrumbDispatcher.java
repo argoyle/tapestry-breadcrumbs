@@ -2,16 +2,17 @@ package se.unbound.tapestry.breadcrumbs;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 
+import org.apache.tapestry5.EventContext;
 import org.apache.tapestry5.Link;
-import org.apache.tapestry5.SymbolConstants;
-import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.runtime.Component;
 import org.apache.tapestry5.services.ApplicationStateManager;
-import org.apache.tapestry5.services.ComponentClassResolver;
+import org.apache.tapestry5.services.ComponentEventLinkEncoder;
 import org.apache.tapestry5.services.ComponentSource;
 import org.apache.tapestry5.services.Dispatcher;
 import org.apache.tapestry5.services.PageRenderLinkSource;
+import org.apache.tapestry5.services.PageRenderRequestParameters;
 import org.apache.tapestry5.services.Request;
 import org.apache.tapestry5.services.Response;
 
@@ -21,75 +22,82 @@ import org.apache.tapestry5.services.Response;
  */
 public class BreadCrumbDispatcher implements Dispatcher {
     private final ApplicationStateManager applicationStateManager;
-    private final ComponentClassResolver componentClassResolver;
     private final ComponentSource componentSource;
-    private final String supportedLocales;
     private final PageRenderLinkSource pageRenderLinkSource;
+    private final ComponentEventLinkEncoder componentEventLinkEncoder;
 
     /**
      * Constructs a new {@link BreadCrumbDispatcher}.
      * 
      * @param applicationStateManager The {@link ApplicationStateManager} to fetch the {@link BreadCrumbList} from.
-     * @param componentClassResolver The {@link ComponentClassResolver} to use to validate page-names.
      * @param componentSource The {@link ComponentSource} to use to retrieve page instances from.
      * @param pageRenderLinkSource The {@link PageRenderLinkSource} to use to render the {@link Link} for the crumb.
-     * @param supportedLocales The supported locales of the application. Used to strip away the localization-part of the
-     *            path.
      */
     public BreadCrumbDispatcher(final ApplicationStateManager applicationStateManager,
-            final ComponentClassResolver componentClassResolver,
             final ComponentSource componentSource, final PageRenderLinkSource pageRenderLinkSource,
-            @Symbol(SymbolConstants.SUPPORTED_LOCALES) final String supportedLocales) {
+            final ComponentEventLinkEncoder componentEventLinkEncoder) {
         this.applicationStateManager = applicationStateManager;
-        this.componentClassResolver = componentClassResolver;
         this.componentSource = componentSource;
         this.pageRenderLinkSource = pageRenderLinkSource;
-        this.supportedLocales = supportedLocales;
+        this.componentEventLinkEncoder = componentEventLinkEncoder;
     }
 
     @Override
     public boolean dispatch(final Request tapestryRequest, final Response tapestryResponse)
             throws IOException {
-        /*
-         * We need to get the Tapestry page requested by the user. So we parse the path extracted from the request
-         */
-        final String path = this.getUnlocalizedPagePath(tapestryRequest.getPath());
-        int nextslashx = path.length();
-        String pageName;
+        final PageRenderRequestParameters requestParameters = this.componentEventLinkEncoder
+                .decodePageRenderRequest(tapestryRequest);
 
-        while (true) {
-            pageName = path.substring(1, nextslashx);
-            if (!pageName.endsWith("/") && this.componentClassResolver.isPageName(pageName)) {
-                break;
+        if (requestParameters == null) {
+            return false;
+        }
+
+        final Component previousPage;
+        final String referrer = tapestryRequest.getHeader("Referer");
+        final ReferrerRequest referrerRequest = ReferrerRequest.fromUri(referrer, tapestryRequest);
+        if (referrerRequest != null) {
+            final PageRenderRequestParameters referrerParameters = this.componentEventLinkEncoder
+                    .decodePageRenderRequest(referrerRequest);
+            if (referrerParameters != null) {
+                previousPage = this.componentSource.getPage(referrerParameters.getLogicalPageName());
+            } else {
+                previousPage = null;
             }
-            nextslashx = path.lastIndexOf('/', nextslashx - 1);
-            if (nextslashx <= 1) {
-                return false;
-            }
+        } else {
+            previousPage = null;
         }
 
         /* Is the requested page tagged with BreadCrumb- or BreadCrumbReset-annotation? */
-        final Component page = this.componentSource.getPage(pageName);
+        final Component page = this.componentSource.getPage(requestParameters.getLogicalPageName());
 
         final BreadCrumbList breadCrumbList = this.applicationStateManager.get(BreadCrumbList.class);
         final BreadCrumbReset reset = this.findAnnotation(page.getClass(), BreadCrumbReset.class);
         if (reset != null) {
-            breadCrumbList.reset();
+            if (previousPage == null
+                    || !this.previousPageIsIgnored(previousPage.getClass(), reset.ignorePages())) {
+                breadCrumbList.reset();
+            }
         }
 
         final BreadCrumb annotation = this.findAnnotation(page.getClass(), BreadCrumb.class);
         if (annotation != null) {
             final String titleKey = annotation.titleKey();
 
-            final Object[] context = this.getContext(path, pageName);
+            final EventContext context = requestParameters.getActivationContext();
 
-            final Link link = this.pageRenderLinkSource.createPageRenderLinkWithContext(pageName, context);
-            final BreadCrumbInfo breadCrumbInfo = new BreadCrumbInfo(titleKey, link, pageName);
+            final Link link = this.pageRenderLinkSource.createPageRenderLinkWithContext(
+                    requestParameters.getLogicalPageName(), context);
+            final BreadCrumbInfo breadCrumbInfo = new BreadCrumbInfo(titleKey, link,
+                    requestParameters.getLogicalPageName());
 
             breadCrumbList.add(breadCrumbInfo);
         }
 
         return false;
+    }
+
+    private boolean previousPageIsIgnored(final Class<?> pageClass, final Class<?>[] ignorePages) {
+        return Arrays.asList(ignorePages).contains(pageClass);
     }
 
     private <T extends Annotation> T findAnnotation(final Class<?> clazz, final Class<T> annotation) {
@@ -100,24 +108,5 @@ public class BreadCrumbDispatcher implements Dispatcher {
         }
 
         return result;
-    }
-
-    private String getUnlocalizedPagePath(final String requestPath) {
-        for (final String locale : this.supportedLocales.split(",")) {
-            if (requestPath.startsWith("/" + locale)) {
-                return requestPath.substring(locale.length() + 1);
-            }
-        }
-        return requestPath;
-    }
-
-    private Object[] getContext(final String path, final String pageName) {
-        Object[] context = new Object[0];
-
-        if (path.length() > pageName.length() + 2) {
-            final String contextString = path.substring(pageName.length() + 2);
-            context = contextString.split("/");
-        }
-        return context;
     }
 }
