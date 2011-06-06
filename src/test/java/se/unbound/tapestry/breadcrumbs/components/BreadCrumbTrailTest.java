@@ -19,7 +19,7 @@ public class BreadCrumbTrailTest extends PageTester {
     @Test
     public void renderCrumbList() {
         final PageRenderLinkSource linkSource = this.getService(PageRenderLinkSource.class);
-        final BreadCrumbList breadCrumbList = new BreadCrumbList();
+        final BreadCrumbList breadCrumbList = new BreadCrumbList(true, 5);
         breadCrumbList.add(new BreadCrumbInfo("msg1", linkSource.createPageRenderLink("page1"), "page1"));
         breadCrumbList.add(new BreadCrumbInfo("msg2", linkSource.createPageRenderLink("page2"), "page2"));
         this.getService(ApplicationStateManager.class).set(BreadCrumbList.class, breadCrumbList);
@@ -28,5 +28,12 @@ public class BreadCrumbTrailTest extends PageTester {
         final String pageContent = page.toString();
         assertTrue("page contains Message1", pageContent.contains("Message1"));
         assertTrue("page contains Message2", pageContent.contains("Message2"));
+    }
+
+    @Test
+    public void renderEmptyCrumbList() {
+        final Document page = this.renderPage("page2");
+        final String pageContent = page.toString();
+        assertTrue("page contains empty <ul>", pageContent.contains("<ul></ul>"));
     }
 }

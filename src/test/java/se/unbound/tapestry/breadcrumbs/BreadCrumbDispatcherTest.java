@@ -51,7 +51,7 @@ public class BreadCrumbDispatcherTest {
 
     @Test
     public void dispatcherAddsPageWithAnnotationToBreadCrumbList() throws Exception {
-        final BreadCrumbList breadCrumbList = new BreadCrumbList();
+        final BreadCrumbList breadCrumbList = this.createBreadCrumbList();
         this.applicationStateManager.set(BreadCrumbList.class, breadCrumbList);
         this.addPage("group", new GroupPageMock());
         final Request request = new RequestMock("/group/1");
@@ -62,7 +62,7 @@ public class BreadCrumbDispatcherTest {
 
     @Test
     public void dispatcherAddsLocalizedPageWithAnnotationToBreadCrumbList() throws Exception {
-        final BreadCrumbList breadCrumbList = new BreadCrumbList();
+        final BreadCrumbList breadCrumbList = this.createBreadCrumbList();
         this.applicationStateManager.set(BreadCrumbList.class, breadCrumbList);
         this.addPage("group", new GroupPageMock());
         final Request request = new RequestMock("/sv_SE/group/1");
@@ -73,7 +73,7 @@ public class BreadCrumbDispatcherTest {
 
     @Test
     public void dispatcherResetsBreadCrumbListIfResetAnnotationIsPresent() throws Exception {
-        final BreadCrumbList breadCrumbList = new BreadCrumbList();
+        final BreadCrumbList breadCrumbList = this.createBreadCrumbList();
         breadCrumbList.add(new BreadCrumbInfo("edit.title", new LinkMock("/edit/2"), "Edit"));
         this.applicationStateManager.set(BreadCrumbList.class, breadCrumbList);
         this.addPage("index", new IndexPageMock());
@@ -86,7 +86,7 @@ public class BreadCrumbDispatcherTest {
     @Test
     public void dispatcherDoesNotResetBreadCrumbListIfResetAnnotationHasSpecifiedPreviousPageClassAsIgnored()
             throws Exception {
-        final BreadCrumbList breadCrumbList = new BreadCrumbList();
+        final BreadCrumbList breadCrumbList = this.createBreadCrumbList();
         breadCrumbList.add(new BreadCrumbInfo("edit.title", new LinkMock("/edit/2"), "Edit"));
         this.applicationStateManager.set(BreadCrumbList.class, breadCrumbList);
         this.addPage("index", new IndexPageWithIgnoreMock());
@@ -100,7 +100,7 @@ public class BreadCrumbDispatcherTest {
 
     @Test
     public void dispatcherResetsBreadCrumbListIfRefererIsNoValidURI() throws Exception {
-        final BreadCrumbList breadCrumbList = new BreadCrumbList();
+        final BreadCrumbList breadCrumbList = this.createBreadCrumbList();
         breadCrumbList.add(new BreadCrumbInfo("edit.title", new LinkMock("/edit/2"), "Edit"));
         this.applicationStateManager.set(BreadCrumbList.class, breadCrumbList);
         this.addPage("index", new IndexPageMock());
@@ -109,6 +109,10 @@ public class BreadCrumbDispatcherTest {
         final Response response = new ResponseMock();
         this.dispatcher.dispatch(request, response);
         assertEquals("list size", 1, breadCrumbList.size());
+    }
+
+    private BreadCrumbList createBreadCrumbList() {
+        return new BreadCrumbList(true, 5);
     }
 
     private void addPage(final String pageName, final Component page) {
