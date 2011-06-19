@@ -27,7 +27,7 @@ public class BreadCrumbModule {
     public void contributeMasterDispatcher(final OrderedConfiguration<Dispatcher> configuration,
             @InjectService("BreadCrumbDispatcher") final Dispatcher breadCrumbDispatcher) {
         configuration.add("BreadCrumbDispatcher", breadCrumbDispatcher,
-                        "before:PageRender");
+                        "after:ComponentEvent,before:PageRender");
     }
 
     /**

@@ -32,7 +32,8 @@ public class BreadCrumbModuleTest {
         final OrderedConfigurationMock<Dispatcher> orderedConfiguration = new OrderedConfigurationMock<Dispatcher>();
         final BreadCrumbDispatcher dispatcher = new BreadCrumbDispatcher(null, null, null, null);
         new BreadCrumbModule().contributeMasterDispatcher(orderedConfiguration, dispatcher);
-        orderedConfiguration.assertConfiguration("BreadCrumbDispatcher", dispatcher, "before:PageRender");
+        orderedConfiguration.assertConfiguration("BreadCrumbDispatcher", dispatcher,
+                "after:ComponentEvent,before:PageRender");
     }
 
     @Test
