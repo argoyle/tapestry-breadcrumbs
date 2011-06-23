@@ -32,3 +32,9 @@ Add the crumb trail to your template:
       </li>
     </ul>
 
+You also need a property for holding the bread crumb when rendering the trail. This should be in your page or layout class 
+depending on where you place the trail:
+
+    @Property
+    private BreadCrumbInfo breadCrumb;
+
