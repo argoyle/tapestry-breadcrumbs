@@ -32,6 +32,7 @@ public class BreadCrumbDispatcher implements Dispatcher {
      * @param applicationStateManager The {@link ApplicationStateManager} to fetch the {@link BreadCrumbList} from.
      * @param componentSource The {@link ComponentSource} to use to retrieve page instances from.
      * @param pageRenderLinkSource The {@link PageRenderLinkSource} to use to render the {@link Link} for the crumb.
+     * @param componentEventLinkEncoder The {@link ComponentEventLinkEncoder} to use to decode page render requests.
      */
     public BreadCrumbDispatcher(final ApplicationStateManager applicationStateManager,
             final ComponentSource componentSource, final PageRenderLinkSource pageRenderLinkSource,

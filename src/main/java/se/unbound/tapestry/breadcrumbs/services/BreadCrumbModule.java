@@ -24,14 +24,23 @@ public class BreadCrumbModule {
         binder.bind(BreadCrumbDispatcher.class).withId("BreadCrumbDispatcher");
     }
 
-    public void contributeMasterDispatcher(final OrderedConfiguration<Dispatcher> configuration,
-            @InjectService("BreadCrumbDispatcher") final Dispatcher breadCrumbDispatcher) {
+    /**
+     * Contributes the {@link BreadCrumbDispatcher} to the master dispatcher configuration.
+     * 
+     * @param configuration The dispatcher configuration to add the {@link BreadCrumbDispatcher} to.
+     * @param breadCrumbDispatcher The {@link BreadCrumbDispatcher} to add.
+     */
+    public static void contributeMasterDispatcher(final OrderedConfiguration<Dispatcher> configuration,
+            @InjectService("BreadCrumbDispatcher")
+            final Dispatcher breadCrumbDispatcher) {
         configuration.add("BreadCrumbDispatcher", breadCrumbDispatcher,
-                        "after:ComponentEvent,before:PageRender");
+                "after:ComponentEvent,before:PageRender");
     }
 
     /**
      * Contributes factory defaults that may be overridden.
+     * 
+     * @param configuration The factory defaults configuration to add default values to.
      */
     public static void contributeFactoryDefaults(final MappedConfiguration<String, String> configuration) {
         configuration.add(BreadCrumbSymbols.DISCARD_DUPLICATES, "true");

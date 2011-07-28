@@ -41,7 +41,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jdk.version>1.6</jdk.version>
-    <tapestry.version>5.2.5</tapestry.version>
+    <tapestry.version>5.2.6</tapestry.version>
   </properties>
 
   <dependencies>
