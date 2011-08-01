@@ -9,7 +9,7 @@
 
   <groupId>se.unbound</groupId>
   <artifactId>tapestry-breadcrumbs</artifactId>
-  <version>1.5</version>
+  <version>1.6-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Unbound Tapestry BreadCrumbs</name>
