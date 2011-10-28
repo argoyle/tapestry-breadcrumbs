@@ -56,7 +56,7 @@ public class BreadCrumbDispatcher implements Dispatcher {
         final Component previousPage;
         final String referrer = tapestryRequest.getHeader("Referer");
         final ReferrerRequest referrerRequest = ReferrerRequest.fromUri(referrer, tapestryRequest);
-        if (referrerRequest != null) {
+        if (referrerRequest != null && !referrer.contains(";")) {
             final PageRenderRequestParameters referrerParameters = this.componentEventLinkEncoder
                     .decodePageRenderRequest(referrerRequest);
             if (referrerParameters != null) {
