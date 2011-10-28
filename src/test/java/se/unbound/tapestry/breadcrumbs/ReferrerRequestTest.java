@@ -40,6 +40,16 @@ public class ReferrerRequestTest {
         assertEquals("path", "/index", referrerRequest.getPath());
     }
 
+    @Test
+    public void fromUriStripsJsessionidCorrectly() {
+        final Request request = this.createRequest("localhost", 80, "/app", "/edit");
+        final ReferrerRequest referrerRequest = ReferrerRequest.fromUri(
+                "http://localhost:80/app/index;jsessionid=082793EE9A197CEB7F7750090DD0423D",
+                request);
+        assertNotNull("result", referrerRequest);
+        assertEquals("path", "/index", referrerRequest.getPath());
+    }
+
     private Request createRequest(final String server, final int port, final String context,
             final String path) {
         return new RequestMock(server, port, context, path);

@@ -20,7 +20,7 @@ public class DisplayBreadCrumb {
     private BreadCrumbInfo breadCrumb;
 
     /**
-     * Retrives the title for the crumb by looking up the titleKey in the messages for the page.
+     * Retrieves the title for the crumb by looking up the titleKey in the messages for the page.
      * 
      * @return The message for the specified titleKey.
      */
