@@ -14,7 +14,7 @@ Add a dependency to your POM:
     <dependency>
       <groupId>se.unbound</groupId>
       <artifactId>tapestry-breadcrumbs</artifactId>
-      <version>1.5</version>
+      <version>1.6</version>
     </dependency>
 
 Add the annotation to your page-classes:
