@@ -44,4 +44,9 @@ public class ServiceBindingOptionsMock<T> implements ServiceBindingOptions {
         throw new UnsupportedOperationException("Not yet implemented!");
     }
 
+    @Override
+    public ServiceBindingOptions withSimpleId() {
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
 }

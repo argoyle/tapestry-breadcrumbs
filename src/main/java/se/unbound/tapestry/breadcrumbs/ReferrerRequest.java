@@ -126,4 +126,9 @@ public class ReferrerRequest implements Request {
     public int getServerPort() {
         return this.wrappedRequest.getServerPort();
     }
+
+    @Override
+    public String getRemoteHost() {
+        return this.wrappedRequest.getRemoteHost();
+    }
 }
