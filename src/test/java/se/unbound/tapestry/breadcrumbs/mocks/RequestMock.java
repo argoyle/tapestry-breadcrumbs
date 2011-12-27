@@ -125,4 +125,9 @@ public class RequestMock implements Request {
     public int getLocalPort() {
         throw new UnsupportedOperationException("Not yet implemented!");
     }
+
+    @Override
+    public String getRemoteHost() {
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
 }

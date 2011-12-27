@@ -3,6 +3,7 @@ package se.unbound.tapestry.breadcrumbs.mocks;
 import java.util.List;
 
 import org.apache.tapestry5.Link;
+import org.apache.tapestry5.internal.services.LinkSecurity;
 
 public class LinkMock implements Link {
     private final String linkString;
@@ -79,5 +80,15 @@ public class LinkMock implements Link {
     @Override
     public String toString() {
         return this.linkString;
+    }
+
+    @Override
+    public LinkSecurity getSecurity() {
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
+    @Override
+    public void setSecurity(LinkSecurity arg0) {
+        throw new UnsupportedOperationException("Not yet implemented!");
     }
 }
