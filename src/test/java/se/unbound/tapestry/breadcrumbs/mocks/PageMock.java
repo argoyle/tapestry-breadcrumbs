@@ -12,22 +12,6 @@ public class PageMock implements Component {
         throw new UnsupportedOperationException("Not yet implemented!");
     }
 
-    public void containingPageDidLoad() {
-        throw new UnsupportedOperationException("Not yet implemented!");
-    }
-
-    public void containingPageDidDetach() {
-        throw new UnsupportedOperationException("Not yet implemented!");
-    }
-
-    public void containingPageDidAttach() {
-        throw new UnsupportedOperationException("Not yet implemented!");
-    }
-
-    public void restoreStateBeforePageAttach() {
-        throw new UnsupportedOperationException("Not yet implemented!");
-    }
-
     @Override
     public void postRenderCleanup() {
         throw new UnsupportedOperationException("Not yet implemented!");
