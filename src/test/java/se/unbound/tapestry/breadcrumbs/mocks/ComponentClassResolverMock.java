@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.tapestry5.runtime.Component;
 import org.apache.tapestry5.services.ComponentClassResolver;
+import org.apache.tapestry5.services.transform.ControlledPackageType;
 
 public class ComponentClassResolverMock implements ComponentClassResolver {
     private final Map<String, Component> pages = new HashMap<String, Component>();
@@ -51,6 +52,16 @@ public class ComponentClassResolverMock implements ComponentClassResolver {
 
     @Override
     public Map<String, String> getFolderToPackageMapping() {
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
+    @Override
+    public Map<String, ControlledPackageType> getControlledPackageMapping() {
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
+    @Override
+    public boolean isPage(String arg0) {
         throw new UnsupportedOperationException("Not yet implemented!");
     }
 }
