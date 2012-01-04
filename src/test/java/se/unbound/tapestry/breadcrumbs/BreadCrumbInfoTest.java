@@ -26,6 +26,6 @@ public class BreadCrumbInfoTest {
 
     @Test
     public void hashCodeIsCorrect() {
-        assertEquals("hashCode", 1445916792, this.crumb.hashCode());
+        assertEquals("hashCode", 100346695, this.crumb.hashCode());
     }
 }

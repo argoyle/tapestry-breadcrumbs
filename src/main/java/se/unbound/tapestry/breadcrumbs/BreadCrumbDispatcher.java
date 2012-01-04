@@ -54,16 +54,11 @@ public class BreadCrumbDispatcher implements Dispatcher {
         }
 
         final Component previousPage;
-        final String referrer = tapestryRequest.getHeader("Referer");
-        final ReferrerRequest referrerRequest = ReferrerRequest.fromUri(referrer, tapestryRequest);
-        if (referrerRequest != null) {
-            final PageRenderRequestParameters referrerParameters = this.componentEventLinkEncoder
-                    .decodePageRenderRequest(referrerRequest);
-            if (referrerParameters != null) {
-                previousPage = this.componentSource.getPage(referrerParameters.getLogicalPageName());
-            } else {
-                previousPage = null;
-            }
+
+        final BreadCrumbList breadCrumbList = this.applicationStateManager.get(BreadCrumbList.class);
+        if (breadCrumbList.size() > 0) {
+            final BreadCrumbInfo lastCrumb = breadCrumbList.getLastCrumb();
+            previousPage = this.componentSource.getPage(lastCrumb.getPageName());
         } else {
             previousPage = null;
         }
@@ -71,7 +66,6 @@ public class BreadCrumbDispatcher implements Dispatcher {
         /* Is the requested page tagged with BreadCrumb- or BreadCrumbReset-annotation? */
         final Component page = this.componentSource.getPage(requestParameters.getLogicalPageName());
 
-        final BreadCrumbList breadCrumbList = this.applicationStateManager.get(BreadCrumbList.class);
         final BreadCrumbReset reset = this.findAnnotation(page.getClass(), BreadCrumbReset.class);
         if (reset != null) {
             if (previousPage == null
@@ -80,6 +74,7 @@ public class BreadCrumbDispatcher implements Dispatcher {
             }
         }
 
+        final BreadCrumbInfo breadCrumbInfo;
         final BreadCrumb annotation = this.findAnnotation(page.getClass(), BreadCrumb.class);
         if (annotation != null) {
             final String titleKey = annotation.titleKey();
@@ -88,11 +83,13 @@ public class BreadCrumbDispatcher implements Dispatcher {
 
             final Link link = this.pageRenderLinkSource.createPageRenderLinkWithContext(
                     requestParameters.getLogicalPageName(), context);
-            final BreadCrumbInfo breadCrumbInfo = new BreadCrumbInfo(titleKey, link,
+            breadCrumbInfo = new BreadCrumbInfo(titleKey, link,
                     requestParameters.getLogicalPageName());
 
-            breadCrumbList.add(breadCrumbInfo);
+        } else {
+            breadCrumbInfo = new BreadCrumbInfo(requestParameters.getLogicalPageName());
         }
+        breadCrumbList.add(breadCrumbInfo);
 
         return false;
     }

@@ -23,17 +23,17 @@ public class BreadCrumbListTest {
 
     @Test
     public void crumbsAddedBetweenEqualCrumbsArePurged() {
-        this.discardingList.add(new BreadCrumbInfo("key", new LinkMock("/index"), "page"));
-        this.discardingList.add(new BreadCrumbInfo("key", new LinkMock("/edit"), "page"));
+        this.discardingList.add(new BreadCrumbInfo("key", new LinkMock("/index"), "page1"));
+        this.discardingList.add(new BreadCrumbInfo("key", new LinkMock("/edit"), "page2"));
         assertEquals("size", 2, this.discardingList.size());
-        this.discardingList.add(new BreadCrumbInfo("key", new LinkMock("/index"), "page"));
+        this.discardingList.add(new BreadCrumbInfo("key", new LinkMock("/index"), "page1"));
         assertEquals("size", 1, this.discardingList.size());
     }
 
     @Test
     public void iteratorReturnAnIteratorOfAddedCrumbs() {
-        this.discardingList.add(new BreadCrumbInfo("key", new LinkMock("/index"), "page"));
-        this.discardingList.add(new BreadCrumbInfo("key", new LinkMock("/edit"), "page"));
+        this.discardingList.add(new BreadCrumbInfo("key", new LinkMock("/index"), "page1"));
+        this.discardingList.add(new BreadCrumbInfo("key", new LinkMock("/edit"), "page2"));
 
         int crumbs = 2;
         for (final BreadCrumbInfo crumb : this.discardingList) {
@@ -61,5 +61,10 @@ public class BreadCrumbListTest {
         final Iterator<BreadCrumbInfo> iterator = this.nonDiscardingLimitedList.iterator();
         assertEquals("crumb 1", "page2", iterator.next().getPageName());
         assertEquals("crumb 2", "page3", iterator.next().getPageName());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void getLastCrumbThrowsIllegalStateExceptionIfCrumbListIsEmpty() {
+        this.nonDiscardingLimitedList.getLastCrumb();
     }
 }

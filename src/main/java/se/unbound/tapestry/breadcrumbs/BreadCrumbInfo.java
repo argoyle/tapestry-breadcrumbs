@@ -12,7 +12,6 @@ import org.apache.tapestry5.Link;
 public class BreadCrumbInfo implements Serializable {
     private static final long serialVersionUID = 4242583224611192888L;
     private final String titleKey;
-    private final String linkString;
     private final transient Link link;
     private final String pageName;
 
@@ -26,7 +25,17 @@ public class BreadCrumbInfo implements Serializable {
     public BreadCrumbInfo(final String titleKey, final Link link, final String pageName) {
         this.titleKey = titleKey;
         this.link = link;
-        this.linkString = this.link.toString();
+        this.pageName = pageName;
+    }
+
+    /**
+     * Constructs a new {@link BreadCrumbInfo} for pages not to show in crumb trail.
+     * 
+     * @param pageName The name of the page the crumb points to.
+     */
+    public BreadCrumbInfo(final String pageName) {
+        this.titleKey = null;
+        this.link = null;
         this.pageName = pageName;
     }
 
@@ -42,13 +51,22 @@ public class BreadCrumbInfo implements Serializable {
         return this.pageName;
     }
 
+    /**
+     * Should this bread crumb be shown in the crumb trail?
+     * 
+     * @return true if the crumb has a link, otherwise false.
+     */
+    public boolean showInCrumbTrail() {
+        return this.link != null;
+    }
+
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, new String[] { "link", "pageName", "titleKey" });
+        return HashCodeBuilder.reflectionHashCode(this, new String[] { "link", "titleKey" });
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj, new String[] { "link", "pageName", "titleKey" });
+        return EqualsBuilder.reflectionEquals(this, obj, new String[] { "link", "titleKey" });
     }
 }
