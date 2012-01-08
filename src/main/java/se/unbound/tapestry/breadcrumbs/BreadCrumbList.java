@@ -60,7 +60,7 @@ public class BreadCrumbList implements Iterable<BreadCrumbInfo>, Serializable {
         if (this.discardDuplicates && index != -1) {
             this.crumbs.subList(index + 1, this.crumbs.size()).clear();
         } else {
-            if (this.crumbs.size() == this.maxCrumbsToSave) {
+            while (this.getCrumbsToDisplay().size() == this.maxCrumbsToSave) {
                 this.crumbs.remove(0);
             }
             this.crumbs.add(breadCrumbInfo);

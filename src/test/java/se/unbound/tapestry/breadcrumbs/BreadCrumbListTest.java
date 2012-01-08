@@ -63,6 +63,21 @@ public class BreadCrumbListTest {
         assertEquals("crumb 2", "page3", iterator.next().getPageName());
     }
 
+    @Test
+    public void limitedListIgnoresCrumbsNotShownInTrail() {
+        this.nonDiscardingLimitedList.add(new BreadCrumbInfo("key", new LinkMock("/index"), "page1"));
+        this.nonDiscardingLimitedList.add(new BreadCrumbInfo("key", new LinkMock("/edit"), "page2"));
+        this.nonDiscardingLimitedList.add(new BreadCrumbInfo("key", new LinkMock("/edit"), "page2"));
+        this.nonDiscardingLimitedList.add(new BreadCrumbInfo("ignored"));
+        this.nonDiscardingLimitedList.add(new BreadCrumbInfo("ignored"));
+        this.nonDiscardingLimitedList.add(new BreadCrumbInfo("key", new LinkMock("/view"), "page3"));
+
+        assertEquals("size", 2, this.nonDiscardingLimitedList.getCrumbsToDisplay().size());
+        final Iterator<BreadCrumbInfo> iterator = this.nonDiscardingLimitedList.iterator();
+        assertEquals("crumb 1", "page2", iterator.next().getPageName());
+        assertEquals("crumb 2", "page3", iterator.next().getPageName());
+    }
+
     @Test(expected = IllegalStateException.class)
     public void getLastCrumbThrowsIllegalStateExceptionIfCrumbListIsEmpty() {
         this.nonDiscardingLimitedList.getLastCrumb();
