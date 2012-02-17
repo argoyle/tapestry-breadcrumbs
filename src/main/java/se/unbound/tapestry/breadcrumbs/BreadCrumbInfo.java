@@ -14,6 +14,7 @@ public class BreadCrumbInfo implements Serializable {
     private final String titleKey;
     private final transient Link link;
     private final String pageName;
+    private String title = null;
 
     /**
      * Constructs a new {@link BreadCrumbInfo}.
@@ -62,11 +63,21 @@ public class BreadCrumbInfo implements Serializable {
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, new String[] { "link", "titleKey" });
+        return HashCodeBuilder.reflectionHashCode(this, new String[] { "link", "titleKey", "title" });
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj, new String[] { "link", "titleKey" });
+        return EqualsBuilder.reflectionEquals(this, obj, new String[] { "link", "titleKey", "title" });
     }
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	
 }
