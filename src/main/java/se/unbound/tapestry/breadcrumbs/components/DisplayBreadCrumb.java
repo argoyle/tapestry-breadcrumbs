@@ -25,6 +25,9 @@ public class DisplayBreadCrumb {
      * @return The message for the specified titleKey.
      */
     public String getTitle() {
+    	if ( breadCrumb.getTitle() != null ) {
+    		return breadCrumb.getTitle();
+    	}
         final Component page = this.componentSource.getPage(this.breadCrumb.getPageName());
 
         return page.getComponentResources().getMessages().get(this.breadCrumb.getTitleKey());
