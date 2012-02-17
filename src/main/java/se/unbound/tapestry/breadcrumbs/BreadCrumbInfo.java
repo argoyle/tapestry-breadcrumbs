@@ -14,7 +14,7 @@ public class BreadCrumbInfo implements Serializable {
     private final String titleKey;
     private final transient Link link;
     private final String pageName;
-    private String title = null;
+    private String title;
 
     /**
      * Constructs a new {@link BreadCrumbInfo}.
@@ -71,13 +71,12 @@ public class BreadCrumbInfo implements Serializable {
         return EqualsBuilder.reflectionEquals(this, obj, new String[] { "link", "titleKey", "title" });
     }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getTitle() {
+        return this.title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(final String title) {
+        this.title = title;
+    }
 
-	
 }

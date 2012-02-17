@@ -1,5 +1,8 @@
 package se.unbound.tapestry.breadcrumbs;
 
+/**
+ * Symbols used by the crumb library.
+ */
 public class BreadCrumbSymbols {
     /**
      * Indicates if crumbs since the last visit to the current page should be discarded or not. Defaults to true.

@@ -14,5 +14,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface BreadCrumbReset {
+    /**
+     * When navigating from any of these page-classes to the page with the BreadCrumbReset-annotation, no reset will be
+     * performed.
+     */
     Class<?>[] ignorePages() default {};
 }
