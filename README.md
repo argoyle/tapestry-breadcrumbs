@@ -38,3 +38,14 @@ depending on where you place the trail:
     @Property
     private BreadCrumbInfo breadCrumb;
 
+Configuration
+=============
+You can configure the maximum number of crumbs to save (default is Integer.MAX_VALUE) as well as if duplicate crumbs should 
+be discarded or not (default is to discard duplicates).
+
+Configuration is done using the standard Tapestry-way by contributing application defaults:
+
+    public static void contributeApplicationDefaults(final MappedConfiguration<String, String> configuration) {
+        configuration.add(BreadCrumbSymbols.DISCARD_DUPLICATES, "false");
+        configuration.add(BreadCrumbSymbols.MAX_CRUMBS_TO_SAVE, "10");
+    }
