@@ -34,7 +34,7 @@ public class BreadCrumbModule {
             @InjectService("BreadCrumbDispatcher")
             final Dispatcher breadCrumbDispatcher) {
         configuration.add("BreadCrumbDispatcher", breadCrumbDispatcher,
-                "after:ComponentEvent,before:PageRender");
+                "before:*");
     }
 
     /**
