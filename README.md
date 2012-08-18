@@ -14,7 +14,7 @@ Add a dependency to your POM:
     <dependency>
       <groupId>se.unbound</groupId>
       <artifactId>tapestry-breadcrumbs</artifactId>
-      <version>1.8</version>
+      <version>1.9</version>
     </dependency>
 
 Add the annotation to your page-classes:
@@ -37,6 +37,21 @@ depending on where you place the trail:
 
     @Property
     private BreadCrumbInfo breadCrumb;
+
+It's also possible to have a page reset the crumb trail by placing a @BreadCrumbReset-annotation on the page. It's also possible 
+to ignore resetting the crumb trail if the previous page was specified in the ignorePages-attribute (eg. 
+@BreadCrumbReset(ignorePages = {Edit.class, View.class}) will ignore resetting the trail if coming from Edit or View).
+
+From version 1.9 it's possible to change the title of a breadcrumb from the page. Just add
+
+    @SessionState
+    private BreadCrumbList breadCrumbList;
+
+And then in one of the render-methods
+
+    public void beginRender() {
+      breadCrumbList.getLastCrumb().setTitle("<new title>");
+
 
 Configuration
 =============
