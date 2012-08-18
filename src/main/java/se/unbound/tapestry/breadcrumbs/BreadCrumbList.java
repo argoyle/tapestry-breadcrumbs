@@ -2,6 +2,7 @@ package se.unbound.tapestry.breadcrumbs;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import org.apache.tapestry5.ioc.annotations.Symbol;
  */
 public class BreadCrumbList implements Iterable<BreadCrumbInfo>, Serializable {
     private static final long serialVersionUID = 4046582733432334945L;
-    private final List<BreadCrumbInfo> crumbs = new ArrayList<BreadCrumbInfo>();
+    private final List<BreadCrumbInfo> crumbs = Collections.synchronizedList(new ArrayList<BreadCrumbInfo>());
     private final Boolean discardDuplicates;
     private final Integer maxCrumbsToSave;
 
@@ -42,10 +43,12 @@ public class BreadCrumbList implements Iterable<BreadCrumbInfo>, Serializable {
      */
     public List<BreadCrumbInfo> getCrumbsToDisplay() {
         final List<BreadCrumbInfo> crumbsToDisplay = new ArrayList<BreadCrumbInfo>();
-        for (final BreadCrumbInfo crumb : this.crumbs) {
-            if (crumb.showInCrumbTrail()) {
-                crumbsToDisplay.add(crumb);
-            }
+        synchronized (crumbs) {
+	        for (final BreadCrumbInfo crumb : this.crumbs) {
+	            if (crumb.showInCrumbTrail()) {
+	                crumbsToDisplay.add(crumb);
+	            }
+	        }
         }
         return crumbsToDisplay;
     }
@@ -55,16 +58,18 @@ public class BreadCrumbList implements Iterable<BreadCrumbInfo>, Serializable {
      * 
      * @param breadCrumbInfo The crumb to add.
      */
-    public void add(final BreadCrumbInfo breadCrumbInfo) {
-        final int index = this.crumbs.indexOf(breadCrumbInfo);
-        if (this.discardDuplicates && index != -1) {
-            this.crumbs.subList(index + 1, this.crumbs.size()).clear();
-        } else {
-            while (this.getCrumbsToDisplay().size() == this.maxCrumbsToSave) {
-                this.crumbs.remove(0);
-            }
-            this.crumbs.add(breadCrumbInfo);
-        }
+    public synchronized void add(final BreadCrumbInfo breadCrumbInfo) {
+    	synchronized (crumbs) {
+	        final int index = this.crumbs.indexOf(breadCrumbInfo);
+	        if (this.discardDuplicates && index != -1) {
+	            this.crumbs.subList(index + 1, this.crumbs.size()).clear();
+	        } else {
+	            while (this.getCrumbsToDisplay().size() == this.maxCrumbsToSave) {
+	                this.crumbs.remove(0);
+	            }
+	            this.crumbs.add(breadCrumbInfo);
+	        }
+    	}
     }
 
     /**
@@ -80,7 +85,9 @@ public class BreadCrumbList implements Iterable<BreadCrumbInfo>, Serializable {
      * Resets the list of crumbs.
      */
     public void reset() {
-        this.crumbs.clear();
+    	synchronized (crumbs) {
+    		this.crumbs.clear();
+    	}
     }
 
     /**
@@ -89,9 +96,11 @@ public class BreadCrumbList implements Iterable<BreadCrumbInfo>, Serializable {
      * @return The last crumb in the list or null if the list of crumbs is empty.
      */
     public BreadCrumbInfo getLastCrumb() {
-        if (this.crumbs.isEmpty()) {
-            throw new IllegalStateException("No crumbs to fetch.");
-        }
-        return this.crumbs.get(this.crumbs.size() - 1);
+    	synchronized (crumbs) {
+	        if (this.crumbs.isEmpty()) {
+	            throw new IllegalStateException("No crumbs to fetch.");
+	        }
+	        return this.crumbs.get(this.crumbs.size() - 1);
+    	}
     }
 }
